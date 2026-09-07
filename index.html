@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>决策树探究实验室：零食健康判断</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css?v=20260618-final" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand-block">
+        <h1>决策树探究实验室</h1>
+      </div>
+      <nav class="scene-tabs" aria-label="页面切换">
+        <button class="scene-tab active" data-scene="intro">活动1：链接生活 初识概念</button>
+        <button class="scene-tab" data-scene="experiment">活动2：数据为基，探究决策</button>
+        <button class="scene-tab" data-scene="levels">活动3：机器构树 智能推理</button>
+        <button class="scene-tab" data-scene="apply">活动4：梳理总结 拓展提升</button>
+      </nav>
+    </header>
+    <main>
+      <section id="intro" class="scene active" aria-labelledby="intro-title">
+        <div class="intro-layout">
+          <section class="intro-copy">
+            <p class="stage-label">活动1：链接生活 初识概念</p>
+            <h2 id="intro-title">什么是决策树？</h2>
+            <p class="lead">
+              决策树通过逐层提问的方式进行判断，并最终得到结论；它清晰展示思考路径，并能系统评估每个可能的选项。
+            </p>
+            <div class="concept-grid" id="concept-grid" aria-label="决策树基础概念"></div>
+          </section>
+
+          <section class="example-panel">
+            <div class="example-switch" id="example-switch"></div>
+            <div class="example-tree" id="example-tree"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="experiment" class="scene" aria-labelledby="experiment-title">
+        <div class="experiment-head">
+          <div>
+            <h2 id="experiment-title">核心问题：如何基于食品数据，构建能辅助判断食品是否健康的决策树？</h2>
+          </div>
+          <div class="head-actions">
+            <button class="ghost-action" id="reset-lab" type="button">重置实验</button>
+          </div>
+        </div>
+
+        <div class="subtask-strip">
+          <button class="manual-tab active" data-manual-page="manual-exp1" type="button">实验 1：探究特征</button>
+          <button class="manual-tab" data-manual-page="manual-exp3" type="button">实验 2：构建多层决策树</button>
+        </div>
+
+        <section class="manual-subsection active" id="manual-exp1">
+          <div class="manual-subhead">
+            <h3>探究不同特征对食品健康分类的区分度</h3>
+          </div>
+
+        <details class="data-drawer">
+          <summary>
+            <span>食物特征数据表：</span>
+            <strong class="data-count-label">10 条典型食品记录，5 列候选特征，1 列分类结果</strong>
+          </summary>
+          <div class="data-table-wrap">
+            <table id="data-table"></table>
+          </div>
+        </details>
+
+        <div class="lab-grid">
+          <section class="tree-lab">
+            <div class="tree-stage no-console-stage" id="tree-stage">
+              <svg class="pipe-layer" viewBox="0 0 900 560" preserveAspectRatio="none" aria-hidden="true">
+                <path class="pipe-wall" d="M450 222 C330 260 238 292 170 330" />
+                <path class="pipe-wall" d="M450 222 C570 260 662 292 730 330" />
+                <path class="pipe-core" d="M450 222 C330 260 238 292 170 330" />
+                <path class="pipe-core" d="M450 222 C570 260 662 292 730 330" />
+                <path class="pipe-glow" d="M450 222 C330 260 238 292 170 330" />
+                <path class="pipe-glow" d="M450 222 C570 260 662 292 730 330" />
+              </svg>
+
+              <aside class="food-bank">
+                <h3>食品数据池</h3>
+                <div class="bank-list" id="food-bank"></div>
+              </aside>
+
+              <button class="root-node" id="root-node" type="button" aria-expanded="false" aria-controls="feature-popover">
+                <span>根节点</span>
+                <strong id="root-feature">请选择</strong>
+              </button>
+
+              <div class="feature-popover" id="feature-popover" hidden>
+                <div class="popover-head">
+                  <strong>选择想探究的特征</strong>
+                  <span>选完后食品会重新流向管道</span>
+                </div>
+                <div class="feature-dock" id="feature-dock" aria-label="选择候选特征"></div>
+              </div>
+
+              <div class="branch-label yes-label">是</div>
+              <div class="branch-label no-label">否</div>
+              <div class="branch-lane lane-yes" data-lane="0"></div>
+              <div class="branch-lane lane-no" data-lane="1"></div>
+            </div>
+          </section>
+
+          <aside class="record-panel experiment-record-panel">
+            <div class="sheet-block">
+              <h3>实验目的</h3>
+              <p>探究不同特征对食品健康分类的区分度</p>
+            </div>
+            <div class="sheet-block">
+              <h3>实验步骤</h3>
+              <ol>
+                <li>点击测试节点，选择一个特征。</li>
+                <li>观察食品流向左右两个接收池。</li>
+                <li>根据每个接收池的主色，选择对应的色块。</li>
+                <li>更换特征重复实验，比较哪一种分流更清楚。</li>
+              </ol>
+            </div>
+            <div class="lab-record-input-card">
+              <div class="sheet-table-head">
+                <h3>实验记录</h3>
+                <span id="record-count">0/4 行</span>
+              </div>
+              <div class="experiment-sheet-wrap" id="experiment-sheet-wrap"></div>
+              <button class="primary-action wide" id="save-record" type="button">开启数据分析</button>
+            </div>
+            <div class="sheet-analysis lab-analysis-card" id="lab1-analysis" hidden>
+              <h3>数据分析</h3>
+              <div class="cloze-analysis" id="lab1-analysis-form"></div>
+              <button class="primary-action wide" id="show-lab1-conclusion" type="button">实验结论</button>
+            </div>
+            <div class="sheet-analysis sheet-conclusion" id="lab1-conclusion" hidden>
+              <h3>实验结论</h3>
+              <div class="cloze-analysis" id="lab1-conclusion-form"></div>
+            </div>
+
+            <div class="export-row">
+              <button class="ghost-action" id="save-lab-sheet" type="button">保存</button>
+              <button class="ghost-action" id="print-lab-sheet" type="button">导出实验单 PDF</button>
+            </div>
+          </aside>
+        </div>
+        </section>
+
+        <section class="manual-subsection removed-subsection" id="manual-exp2" hidden aria-hidden="true">
+          <div class="manual-subhead">
+            <p class="stage-label">实验 2：改变数据集</p>
+            <h3>关键特征是否是固定不变的？</h3>
+            <span>候选特征不变，从 20 个食品中抽取 10 个数据，观察关键特征是否发生变化。</span>
+          </div>
+
+          <div class="manual-lab-layout">
+            <aside class="data-picker-rail">
+              <div class="picker-head">
+                <strong>备选数据</strong>
+                <span id="dataset-selected-count">已选择 0/10 条</span>
+              </div>
+              <div class="toolbar-actions compact-actions">
+                <button class="ghost-action" id="dataset-random" type="button">随机 10 条</button>
+                <button class="ghost-action" id="dataset-clear" type="button">清空</button>
+              </div>
+              <div class="sample-pool compact-pool" id="sample-pool"></div>
+            </aside>
+
+            <section class="tree-lab">
+              <details class="data-drawer compact-drawer">
+                <summary>
+                  <span>本组抽取的数据表</span>
+                  <strong id="dataset-table-label">还没有选择数据</strong>
+                </summary>
+                <div class="data-table-wrap">
+                  <table id="dataset-table"></table>
+                </div>
+              </details>
+
+              <div class="tree-stage no-console-stage" id="dataset-tree-stage">
+                <svg class="pipe-layer" viewBox="0 0 900 560" preserveAspectRatio="none" aria-hidden="true">
+                  <path class="pipe-wall" d="M450 222 C330 260 238 292 170 330" />
+                  <path class="pipe-wall" d="M450 222 C570 260 662 292 730 330" />
+                  <path class="pipe-core" d="M450 222 C330 260 238 292 170 330" />
+                  <path class="pipe-core" d="M450 222 C570 260 662 292 730 330" />
+                  <path class="pipe-glow" d="M450 222 C330 260 238 292 170 330" />
+                  <path class="pipe-glow" d="M450 222 C570 260 662 292 730 330" />
+                </svg>
+
+                <aside class="food-bank">
+                  <h3>本组数据池</h3>
+                  <div class="bank-list" id="dataset-food-bank"></div>
+                </aside>
+
+                <button class="root-node" id="dataset-root-node" type="button" aria-expanded="false" aria-controls="dataset-feature-popover">
+                  <span>根节点</span>
+                  <strong id="dataset-root-feature">选择特征</strong>
+                </button>
+
+                <div class="feature-popover" id="dataset-feature-popover" hidden>
+                  <div class="popover-head">
+                    <strong>选择想探究的特征</strong>
+                    <span>只对本组 10 条数据分流</span>
+                  </div>
+                  <div class="feature-dock" id="dataset-feature-dock" aria-label="选择候选特征"></div>
+                </div>
+
+                <div class="branch-label yes-label">是</div>
+                <div class="branch-label no-label">否</div>
+                <div class="branch-lane lane-yes" id="dataset-lane-yes"></div>
+                <div class="branch-lane lane-no" id="dataset-lane-no"></div>
+
+              </div>
+            </section>
+
+            <aside class="record-panel experiment-record-panel">
+              <div class="sheet-block">
+                <h3>实验目的</h3>
+                <p>在测试特征保持不变的条件下，改变输入数据集，观察分类效果是否发生变化。</p>
+              </div>
+              <div class="sheet-block">
+                <h3>实验步骤</h3>
+                <ol>
+                  <li>从左侧备选数据中选择 10 个食品，形成一组数据集。</li>
+                  <li>点击根节点，选择一个固定的测试特征进行分流。</li>
+                  <li>点击“添加”，生成一条记录，再补全测试特征和区分度判断。</li>
+                  <li>更换数据集，再用同一特征重复实验并比较结果。</li>
+                </ol>
+              </div>
+              <div class="sheet-table-head">
+                <h3>实验记录</h3>
+                <span id="dataset-record-count">0 组</span>
+              </div>
+              <div class="dataset-record-table-wrap" id="dataset-record-table-wrap"></div>
+              <div class="dataset-record-actions">
+                <button class="primary-action wide" id="save-dataset-record" type="button">添加</button>
+                <button class="ghost-action wide" id="undo-dataset-record" type="button">撤销</button>
+              </div>
+              <div class="sheet-analysis">
+                <h3>数据分析</h3>
+                <ol class="analysis-questions">
+                  <li>固定同一个测试特征后，不同数据组的区分度是否完全相同？</li>
+                  <li>哪一组数据分流后更清楚？你是根据什么现象判断的？</li>
+                  <li>这说明判断关键特征时，除了特征本身，还需要关注什么？</li>
+                </ol>
+              </div>
+              <div class="sheet-analysis sheet-conclusion">
+                <h3>实验结论</h3>
+                <p>请根据实验记录，选择你对“关键特征是否固定不变”的判断。</p>
+                <div class="hidden-options" id="dataset-conclusion-options"></div>
+                <p class="analysis-summary" id="dataset-conclusion">生成至少一组记录后，再完成实验结论。</p>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="manual-subsection" id="manual-exp3">
+          <div class="manual-subhead">
+            <h3>构建简单的决策树模型</h3>
+          </div>
+
+          <div class="manual-lab-layout">
+            <aside class="data-picker-rail">
+              <div class="picker-head">
+                <strong>食物数据组</strong>
+                <span id="depth-selected-count">第一组 · 10 条</span>
+              </div>
+              <div class="depth-group-buttons" id="depth-group-buttons" aria-label="选择固定数据组"></div>
+              <div class="sample-pool compact-pool" id="depth-sample-pool"></div>
+            </aside>
+
+            <section class="tree-lab">
+              <details class="data-drawer compact-drawer">
+                <summary>
+                  <span>本组抽取的数据表</span>
+                  <strong id="depth-table-label">还没有选择数据</strong>
+                </summary>
+                <div class="data-table-wrap">
+                  <table id="depth-table"></table>
+                </div>
+              </details>
+
+              <div class="tree-stage layered-tree-stage no-console-stage" id="depth-tree-stage">
+                <svg class="pipe-layer" viewBox="0 0 900 560" preserveAspectRatio="none" aria-hidden="true">
+                  <path class="pipe-wall" d="M450 222 C330 260 238 292 170 330" />
+                  <path class="pipe-wall" d="M450 222 C570 260 662 292 730 330" />
+                  <path class="pipe-core" d="M450 222 C330 260 238 292 170 330" />
+                  <path class="pipe-core" d="M450 222 C570 260 662 292 730 330" />
+                  <path class="pipe-glow" d="M450 222 C330 260 238 292 170 330" />
+                  <path class="pipe-glow" d="M450 222 C570 260 662 292 730 330" />
+                </svg>
+
+                <aside class="food-bank">
+                  <h3>本组数据池</h3>
+                  <div class="bank-list" id="depth-food-bank"></div>
+                </aside>
+
+                <button class="root-node" id="depth-root-node" data-depth-node="root" type="button" aria-expanded="false" aria-controls="depth-feature-popover">
+                  <span>根节点</span>
+                  <strong id="depth-root-feature">选择特征</strong>
+                </button>
+
+                <div class="depth-feature-panel" id="depth-feature-popover">
+                  <div class="popover-head">
+                    <strong>选择节点特征</strong>
+                    <span id="depth-active-node-label">点击树上的节点后，在这里选择特征。</span>
+                  </div>
+                  <div class="feature-dock" id="depth-feature-dock" aria-label="选择节点特征"></div>
+                </div>
+
+                <div class="depth-recursive-canvas" id="depth-recursive-canvas"></div>
+
+                <div class="branch-label yes-label">是</div>
+                <div class="branch-label no-label">否</div>
+                <div class="branch-lane lane-yes depth-lane" id="depth-lane-yes"></div>
+                <div class="branch-lane lane-no depth-lane" id="depth-lane-no"></div>
+                <div class="depth-stage-verify">
+                  <button class="primary-action" id="depth-validate" type="button">验证本组</button>
+                  <p id="depth-verify-message">完成分流后，在这里验证。</p>
+                </div>
+              </div>
+            </section>
+
+            <aside class="record-panel experiment-record-panel">
+              <div class="sheet-block">
+                <h3>实验目的</h3>
+                <p>在混杂分支中继续选择特征，尝试构建一棵能够逐步完成分类的多层决策树。</p>
+              </div>
+              <div class="sheet-block">
+                <h3>实验步骤</h3>
+                <ol>
+                  <li>从根节点开始，选择一个当前最合适的特征。</li>
+                  <li>观察左右分支是否已经比较清楚。</li>
+                  <li>如果某个分支仍然混杂，就在该分支继续选择新的特征。</li>
+                  <li>完成构建后，把过程抽象成决策树构建步骤。</li>
+                </ol>
+              </div>
+            </aside>
+          </div>
+          <div class="depth-bottom-panel">
+            <section class="sheet-analysis depth-modeling-panel">
+              <div class="depth-modeling-head">
+                <div>
+                  <h3>构树步骤排序</h3>
+                </div>
+                <button class="ghost-action reset-order" data-reset-order="true" type="button">重新排序</button>
+              </div>
+              <div class="order-activity" id="depth-order-activity"></div>
+              <p class="analysis-summary" id="depth-summary" hidden></p>
+            </section>
+            <section class="sheet-analysis sheet-conclusion depth-conclusion-panel">
+              <h3>实验结论</h3>
+              <p class="analysis-summary">当一层判断不能把数据分清时，可以在混杂分支继续选择新的特征，逐步生成多层决策树。</p>
+            </section>
+          </div>
+        </section>
+      </section>
+
+      <section id="levels" class="scene" aria-labelledby="levels-title">
+        <div class="experiment-head">
+          <div>
+            <p class="stage-label">活动3：机器构树 智能推理</p>
+            <h2 id="levels-title">计算机怎样自动选择节点并完成预测？</h2>
+          </div>
+          <div class="head-actions">
+            <button class="ghost-action" id="reset-computer" type="button">重置控制台</button>
+          </div>
+        </div>
+
+        <details class="data-drawer">
+          <summary>
+            <span>投喂给计算机的完整数据表</span>
+            <strong id="computer-table-label">500 条食品记录，固定启用 6 个特征</strong>
+          </summary>
+          <div class="data-table-wrap">
+            <table id="computer-data-table"></table>
+          </div>
+        </details>
+
+        <div class="computer-flow">
+          <section class="computer-step-panel step-prepare">
+            <div class="flow-step-title">
+              <span>1</span>
+              <div>
+                <h3>数据准备</h3>
+                <p>统一投喂 500 条课堂食品数据，固定使用 6 个常见影响因素。</p>
+              </div>
+            </div>
+            <div class="fixed-data-summary">
+              <div>
+                <span>数据量</span>
+                <strong id="computer-size-value">500 条</strong>
+              </div>
+              <div>
+                <span>候选特征</span>
+                <strong id="computer-feature-value">6 个</strong>
+              </div>
+            </div>
+            <div class="fixed-feature-list" id="computer-fixed-features"></div>
+            <div class="standard-note">
+              <strong>数据说明</strong>
+              <p>膳食纤维分档参考国家标准中“膳食纤维来源/高或富含膳食纤维”的营养声称阈值；其他特征为课堂简化分级，仅用于学习决策树构建过程。</p>
+            </div>
+            <button class="primary-action wide" id="computer-start" type="button">投喂数据</button>
+          </section>
+
+          <section class="computer-step-panel step-train">
+            <div class="flow-step-title">
+              <span>2</span>
+              <div>
+                <h3>训练模型</h3>
+                <p>计算机快速比较候选特征，选择信息增益高的节点。</p>
+              </div>
+            </div>
+            <div class="panel-title-row">
+              <h3>程序运行</h3>
+              <span id="computer-progress">等待开始</span>
+            </div>
+            <div class="terminal-log" id="computer-log"></div>
+            <div class="score-board compact-score-board" id="computer-score-board"></div>
+            <div class="computer-actions">
+              <button class="ghost-action" id="computer-next" type="button">执行一步</button>
+              <button class="ghost-action" id="computer-finish" type="button">快速完成</button>
+            </div>
+            <details class="code-drawer">
+              <summary>查看计算机思路</summary>
+              <pre><code>for 每一个候选特征:
+    计算分裂后的混杂程度
+    得到信息增益
+选择信息增益最高的特征作为节点
+如果分支仍然混杂:
+    在当前分支继续重复计算
+生成决策树后:
+    输入新食品特征，沿路径得到预测结果</code></pre>
+            </details>
+          </section>
+
+          <section class="computer-step-panel step-model">
+            <div class="panel-title-row">
+              <div class="flow-step-title compact-title">
+                <span>3</span>
+                <div>
+                  <h3>生成模型</h3>
+                  <p>查看计算机生成的决策树。</p>
+                </div>
+              </div>
+              <span id="computer-model-state">尚未生成</span>
+            </div>
+            <div class="tree-output computer-tree-output" id="computer-tree"></div>
+          </section>
+
+          <section class="computer-step-panel step-apply">
+            <div class="flow-step-title">
+              <span>4</span>
+              <div>
+                <h3>应用模型</h3>
+                <p>输入新食品特征，沿着模型路径完成预测。</p>
+              </div>
+            </div>
+            <div class="prediction-box">
+              <div class="prediction-form" id="prediction-form"></div>
+              <button class="primary-action wide" id="predict-food" type="button">开始预测</button>
+              <div class="prediction-result" id="prediction-result"></div>
+              <section class="model-card-dock" aria-label="课堂食品特征卡">
+                <div class="model-card-dock-head">
+                  <strong>食品特征卡</strong>
+                </div>
+                <div class="model-card-strip" id="computer-food-card-strip"></div>
+              </section>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section id="apply" class="scene" aria-label="活动 4">
+        <section class="summary-lab">
+          <div class="summary-hero">
+            <div>
+              <span class="summary-kicker">课堂总结</span>
+              <h3>决策树：把判断过程清楚地表达出来</h3>
+              <p>它能把“根据特征一步步判断”的过程画成树，也能帮助计算机完成分类与预测。</p>
+            </div>
+          </div>
+
+          <div class="summary-card-grid">
+            <article class="summary-card">
+              <div>
+                <h3>重要地位：专家系统</h3>
+                <p>早期人工智能会把专家经验写成一条条规则。决策树能把这些规则画成清楚的判断路线。</p>
+              </div>
+            </article>
+            <article class="summary-card">
+              <div>
+                <h3>优势与应用</h3>
+                <p>每一步为什么这样判断，都能沿着路径说清楚。它常用于分类、风险判断和推荐筛选。</p>
+              </div>
+            </article>
+            <article class="summary-card">
+              <div>
+                <h3>决策树的局限</h3>
+                <p>如果数据变了、特征变了，结果可能也会变。树太复杂时，还可能只记住旧数据。</p>
+              </div>
+            </article>
+            <article class="summary-card">
+              <div>
+                <h3>优化算法：随机森林</h3>
+                <p>随机森林就像让多棵决策树一起投票。多数树同意的结果，通常会更稳一些。</p>
+              </div>
+            </article>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="./app.js?v=20260618-final"></script>
+  </body>
+</html>
