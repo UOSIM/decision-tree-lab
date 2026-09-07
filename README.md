@@ -2,7 +2,7 @@
 
 零食健康判断主题的决策树教学互动实验，包含概念学习、特征探究、多层决策树和智能推理等活动。
 
-在线访问：<https://wisonlin.github.io/decision-tree-lab/>
+GitHub Pages 发布地址：<https://uosim.github.io/decision-tree-lab/>
 
 ## 本地使用
 
